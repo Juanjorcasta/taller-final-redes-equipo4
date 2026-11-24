@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cliente de prueba CORS - Envíos</title>
+  <style>body{font-family:sans-serif;max-width:700px;margin:2rem auto}pre{background:#f3f3f3;padding:1rem}</style>
+</head>
+<body>
+  <h1>Cliente web de consulta de envíos</h1>
+  <p>Abrir con Live Server en <code>http://localhost:5500</code> (origen permitido). Si se abre desde otro puerto, el navegador bloqueará la respuesta por CORS.</p>
+  <label>N del equipo: <input id="n" value="1" size="4"></label>
+  <button onclick="consultar()">Consultar envíos</button>
+  <pre id="salida">...</pre>
+  <script>
+    async function consultar() {
+      const salida = document.getElementById('salida');
+      try {
+        const r = await fetch('http://localhost:3000/api/recurso', {
+          headers: { 'X-Red-Equipo': 'CIAF-' + document.getElementById('n').value }
+        });
+        const datos = await r.json();
+        salida.textContent = 'Status: ' + r.status +
+          '\nX-Servidor-Procesado: ' + r.headers.get('X-Servidor-Procesado') +
+          '\n\n' + JSON.stringify(datos, null, 2);
+      } catch (e) {
+        salida.textContent = 'Error (posible bloqueo CORS): ' + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
